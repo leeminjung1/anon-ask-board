@@ -44,26 +44,42 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostViewResponse view(@Valid PostViewRequest postRequest) {
-        PostEntity post = postRepository.findFirstByIdAndStatusOrderByIdDesc(postRequest.getPostId(), "REGISTERED")
-                .map(it -> {
-                    if (!it.getPassword().equals(postRequest.getPassword())) {
-//                        throw new RuntimeException("비밀번호가 일치하지 않습니다.");
-                        var format= "패스워드가 일치하지 않습니다. %s vs %s";
-                        throw new RuntimeException(String.format(format, it.getPassword(), postRequest.getPassword()));
-                    }
-                    return it;
-                })
-                .orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다. : " + postRequest.getPostId()));
-
-        return PostViewResponse.builder()
+    public List<PostViewResponse> allByBoardId(Long boardId) {
+        return postRepository.findAllByBoardIdAndStatusOrderByIdDesc(boardId, "REGISTERED")
+            .stream()
+            .map(post -> PostViewResponse
+                .builder()
+                .userName(post.getUserName())
                 .id(post.getId())
+                .title(post.getTitle())
+                .email(post.getEmail())
                 .postedAt(post.getPostedAt())
                 .content(post.getContent())
-                .email(post.getEmail())
-                .title(post.getTitle())
-                .userName(post.getUserName())
-                .build();
+                .build())
+            .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PostViewResponse view(@Valid PostViewRequest postRequest) {
+        PostEntity post = postRepository.findFirstByIdAndStatusOrderByIdDesc(postRequest.getPostId(), "REGISTERED")
+            .map(it -> {
+                if (!it.getPassword().equals(postRequest.getPassword())) {
+                    //                        throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+                    var format = "패스워드가 일치하지 않습니다. %s vs %s";
+                    throw new RuntimeException(String.format(format, it.getPassword(), postRequest.getPassword()));
+                }
+                return it;
+            })
+            .orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다. : " + postRequest.getPostId()));
+
+        return PostViewResponse.builder()
+            .id(post.getId())
+            .postedAt(post.getPostedAt())
+            .content(post.getContent())
+            .email(post.getEmail())
+            .title(post.getTitle())
+            .userName(post.getUserName())
+            .build();
     }
 
     public List<PostViewResponse> all() {

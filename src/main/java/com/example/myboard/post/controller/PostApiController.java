@@ -37,4 +37,9 @@ public class PostApiController {
     public void delete(@Valid @RequestBody PostViewRequest postViewRequest) {
         postService.delete(postViewRequest);
     }
+
+    @GetMapping("/{boardId}/all")
+    public List<PostViewResponse> allByBoardId(@PathVariable Long boardId) {
+        return postService.allByBoardId(boardId);
+    }
 }

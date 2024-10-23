@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<PostEntity, Long> {
-    public Optional<PostEntity> findFirstByIdAndStatusOrderByIdDesc(Long id, String status);
+    Optional<PostEntity> findFirstByIdAndStatusOrderByIdDesc(Long id, String status);
 
-    public List<PostEntity> findAllByStatusOrderByIdDesc(String status);
+    List<PostEntity> findAllByStatusOrderByIdDesc(String status);
+
+    List<PostEntity> findAllByBoardIdAndStatusOrderByIdDesc(Long boardId, String status);
 }
