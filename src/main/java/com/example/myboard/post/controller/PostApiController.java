@@ -19,27 +19,33 @@ public class PostApiController {
     private final PostService postService;
 
     @PostMapping
-    public PostResponse create(@Valid @RequestBody PostRequest postRequest) {
+    public PostResponse create(
+        @Valid @RequestBody PostRequest postRequest
+    ){
         return postService.create(postRequest);
     }
 
     @PostMapping("/view")
-    public PostViewResponse view(@Valid @RequestBody PostViewRequest postRequest) {
-        return postService.view(postRequest);
+    public PostViewResponse view(
+        @Valid @RequestBody PostViewRequest postViewRequest
+    ){
+        return postService.view(postViewRequest);
     }
 
     @GetMapping("/all")
-    public List<PostViewResponse> getAll() {
+    public List<PostViewResponse> all() {
         return postService.all();
     }
 
-    @PostMapping("/delete")
-    public void delete(@Valid @RequestBody PostViewRequest postViewRequest) {
-        postService.delete(postViewRequest);
+    @GetMapping("/{boardId}")
+    public List<PostViewResponse> getPostsByBoardId(@PathVariable Long boardId) {
+        return postService.getPostsByBoardId(boardId);
     }
 
-    @GetMapping("/{boardId}/all")
-    public List<PostViewResponse> allByBoardId(@PathVariable Long boardId) {
-        return postService.allByBoardId(boardId);
+    @PostMapping("/delete")
+    public void delete(
+        @Valid @RequestBody PostViewRequest postViewRequest
+    ){
+        postService.delete(postViewRequest);
     }
 }
