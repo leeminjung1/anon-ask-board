@@ -48,4 +48,12 @@ public class PostApiController {
     ){
         postService.delete(postViewRequest);
     }
+
+    @PutMapping("/{id}")
+    public PostResponse updatePost(
+        @PathVariable Long id,
+        @Valid @RequestBody PostRequest postRequest
+    ){
+        return postService.updatePost(id,postRequest);
+    }
 }
